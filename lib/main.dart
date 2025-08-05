@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meels_app/data/db.dart';
 import 'package:flutter_meels_app/resources/app_theme.dart';
 import 'package:flutter_meels_app/resources/route_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DbHelper.initDb(); // Initialize the database
   runApp(const MyApp());
 }
 

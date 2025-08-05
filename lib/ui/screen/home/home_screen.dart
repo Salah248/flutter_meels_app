@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_meels_app/data/db.dart';
+import 'package:flutter_meels_app/data/model.dart';
 import 'package:flutter_meels_app/resources/assets_manager.dart';
 import 'package:flutter_meels_app/resources/color_manager.dart';
+import 'package:flutter_meels_app/resources/route_manager.dart';
 import 'package:flutter_meels_app/resources/style_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final String _cardRate = '4.9';
+  final String _cardTime = '20 - 30';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildStack() {
     return SizedBox(
-      height: 420.h, // ارتفاع ثابت للـ Stack
+      height: 400.h, // ارتفاع ثابت للـ Stack
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -110,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisCount: 2,
         crossAxisSpacing: 22.w,
         mainAxisSpacing: 44.h,
-        childAspectRatio: 153.w / 190.h, // نسبة العرض للارتفاع
+        childAspectRatio: 153.w / 179.h, // نسبة العرض للارتفاع
         children: [
           _itemCard(image: ImagesManager.card1, title: 'Cheese Burger'),
           _itemCard(image: ImagesManager.card2, title: 'Pasta'),
@@ -125,6 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Align(
       alignment: Alignment.bottomRight,
       child: InkWell(
+        customBorder: const CircleBorder(),
+        radius: 12,
         onTap: () {},
         child: Container(
           width: 80.w,
@@ -147,75 +155,95 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _itemCard({String? image, String? title}) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        color: ColorManager.white,
-        boxShadow: [
-          BoxShadow(
-            color: ColorManager.inactive.withAlpha((.4 * 255).round()),
-            spreadRadius: 0,
-            blurRadius: 60.r,
-            offset: const Offset(6, 6),
+    Future<int> addDataToDataBase() async {
+      return await DbHelper.insert(
+        CardModel(image: image, title: title, rate: _cardRate, time: _cardTime),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () async {
+        await addDataToDataBase();
+        context.push(
+          Routes.mealsDetailesRoute,
+          extra: CardModel(
+            image: image,
+            title: title,
+            rate: _cardRate,
+            time: _cardTime,
           ),
-        ],
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(8.r),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //  CustomCachedNetworkImage(imageUrl: image!, width: 137, height: 106),
-            ClipRRect(
-              borderRadius: BorderRadiusGeometry.circular(8.r),
-              child: Image.asset(
-                image!,
-                width: 137.w,
-                height: 106.h,
-                fit: BoxFit.cover,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(title ?? 'No title', style: StyleManager.cardTitleStyle),
-            SizedBox(height: 6.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.star,
-                      color: ColorManager.primary,
-                      size: 16,
-                    ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      '4.9',
-                      style: StyleManager.cardTitleStyle.copyWith(
-                        fontSize: 12.sp,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const FaIcon(
-                      FontAwesomeIcons.solidClock,
-                      color: ColorManager.primary,
-                      size: 16,
-                    ),
-                    SizedBox(width: 5.w),
-                    Text(
-                      '20 - 30',
-                      style: StyleManager.cardTitleStyle.copyWith(
-                        fontSize: 12.sp,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          color: ColorManager.white,
+          boxShadow: [
+            BoxShadow(
+              color: ColorManager.inactive.withAlpha((.4 * 255).round()),
+              spreadRadius: 0,
+              blurRadius: 60.r,
+              offset: const Offset(6, 6),
             ),
           ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(8.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //  CustomCachedNetworkImage(imageUrl: image!, width: 137, height: 106),
+              ClipRRect(
+                borderRadius: BorderRadiusGeometry.circular(8.r),
+                child: Image.asset(
+                  image!,
+                  width: 137.w,
+                  height: 106.h,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Text(title ?? 'No title', style: StyleManager.cardTitleStyle),
+              SizedBox(height: 6.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        color: ColorManager.primary,
+                        size: 16,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        _cardRate,
+                        style: StyleManager.cardTitleStyle.copyWith(
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const FaIcon(
+                        FontAwesomeIcons.solidClock,
+                        color: ColorManager.primary,
+                        size: 16,
+                      ),
+                      SizedBox(width: 5.w),
+                      Text(
+                        _cardTime,
+                        style: StyleManager.cardTitleStyle.copyWith(
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

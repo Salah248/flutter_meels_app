@@ -1,3 +1,4 @@
+import 'package:flutter_meels_app/data/model.dart';
 import 'package:flutter_meels_app/ui/screen/home/add_meal_screen.dart';
 import 'package:flutter_meels_app/ui/screen/home/home_screen.dart';
 import 'package:flutter_meels_app/ui/screen/home/meals_details_screen.dart';
@@ -32,7 +33,8 @@ class RouteManager {
       ),
       GoRoute(
         path: Routes.mealsDetailesRoute,
-        builder: (context, state) => const MealsDetailsScreen(),
+        builder: (context, state) =>
+            MealsDetailsScreen(cardModel: state.extra as CardModel),
       ),
       GoRoute(
         path: Routes.addMealRoute,
