@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: ColorManager.primary,
               ),
             ),
-            CircularProgressIndicator(color: ColorManager.primary),
+            const CircularProgressIndicator(color: ColorManager.primary),
           ],
         ),
       ),
