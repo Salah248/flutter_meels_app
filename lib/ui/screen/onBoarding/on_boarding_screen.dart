@@ -104,9 +104,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               });
             },
             decorator: DotsDecorator(
-              size: const Size.square(9.0),
+              size: Size(24.w, 6.w),
               activeColor: ColorManager.white,
-              activeSize: const Size(18.0, 9.0),
+              activeSize: Size(24.w, 6.w),
               color: ColorManager.inactive,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0),

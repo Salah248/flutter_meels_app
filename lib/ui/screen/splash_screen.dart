@@ -22,7 +22,9 @@ class _SplashScreenState extends State<SplashScreen> {
   _onBoardingScreenState() async {
     await Future.delayed(const Duration(seconds: 2));
     final viewed = await SharedPrefsHelper.isOnBoardingScreenViewed();
+    final remove = await SharedPrefsHelper.removeOnBoardingScreenViewed();
     if (viewed) {
+      remove;
       context.go(Routes.homeRoute);
     } else {
       context.go(Routes.onBoardingRoute);

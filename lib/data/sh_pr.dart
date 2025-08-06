@@ -5,7 +5,12 @@ const String onBoardScreenViewd = 'onBoardScreenViewd';
 class SharedPrefsHelper {
   static Future<void> setOnBoardingScreenViewed() async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setBool(onBoardScreenViewd, true);
+    sharedPreferences.setBool(onBoardScreenViewd, false);
+  }
+
+  static Future<void> removeOnBoardingScreenViewed() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.remove(onBoardScreenViewd);
   }
 
   static Future<bool> isOnBoardingScreenViewed() async {

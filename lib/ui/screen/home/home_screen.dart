@@ -133,7 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
       child: InkWell(
         customBorder: const CircleBorder(),
         radius: 12,
-        onTap: () {},
+        onTap: () {
+          context.push(Routes.addMealRoute);
+        },
         child: Container(
           width: 80.w,
           alignment: Alignment.center,
