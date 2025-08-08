@@ -20,7 +20,7 @@ class DbHelper {
           onCreate: (db, version) async {
             debugPrint('data base created');
             await db.execute(
-              'CREATE TABLE $_tableName (id INTEGER PRIMARY KEY AUTOINCREMENT, image TEXT, title TEXT, rate TEXT, time TEXT)',
+              'CREATE TABLE $_tableName (id INTEGER PRIMARY KEY AUTOINCREMENT, image TEXT, title TEXT, description TEXT, rate REAL, time TEXT)',
             );
           },
         );
@@ -35,8 +35,21 @@ class DbHelper {
     return await _db!.insert(_tableName, card.toMap());
   }
 
-  static Future<List<Map<String, dynamic>>> query(CardModel card) async {
+  static Future<List<CardModel>> query() async {
     debugPrint('queried data');
-    return await _db!.query(_tableName);
+    final List<Map<String, dynamic>> data = await _db!.query(_tableName);
+    return data.map((item) => CardModel.fromMap(item)).toList();
+  }
+
+  static Future<int> deleteAll() async {
+    debugPrint('deleted all data');
+    return await _db!.delete(_tableName);
+  }
+
+  static Future<void> deleteOldDatabase() async {
+    final dbPath = await getDatabasesPath();
+    final path = '$dbPath/card.dbF';
+    await deleteDatabase(path);
+    debugPrint('Old database deleted');
   }
 }

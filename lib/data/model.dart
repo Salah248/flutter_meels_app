@@ -1,17 +1,23 @@
 class CardModel {
-  final int? id;
   final String? image;
   final String? title;
-  final String? rate;
+  final String? description;
+  final double? rate;
   final String? time;
 
-  CardModel({this.id, this.image, this.title, this.rate, this.time});
+  CardModel({
+    required this.image,
+    required this.title,
+    required this.description,
+    required this.rate,
+    required this.time,
+  });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'image': image,
       'title': title,
+      'description': description,
       'rate': rate,
       'time': time,
     };
@@ -19,10 +25,12 @@ class CardModel {
 
   factory CardModel.fromMap(Map<String, dynamic> map) {
     return CardModel(
-      id: map['id'] != null ? map['id'] as int : null,
       image: map['image'] != null ? map['image'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
-      rate: map['rate'] != null ? map['rate'] as String : null,
+      description: map['description'] != null
+          ? map['description'] as String
+          : null,
+      rate: map['rate'] != null ? map['rate'] as double : null,
       time: map['time'] != null ? map['time'] as String : null,
     );
   }

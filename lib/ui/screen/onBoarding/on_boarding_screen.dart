@@ -36,7 +36,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         description: 'the best choice for your kitchen do not hesitate',
       ),
       customItem(
-        title: ' Our App Your Ultimate Choice',
+        title: ' Our App\nYour Ultimate Choice',
         description:
             'All the best restaurants and their top menus are ready for you',
       ),
@@ -48,13 +48,22 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Image.asset(
-            ImagesManager.welcomePageImage,
-            fit: BoxFit.fitWidth,
+          Container(
             width: double.infinity,
             height: double.infinity,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(ImagesManager.welcomePageImage),
+                fit: BoxFit.fill,
+              ),
+            ),
           ),
-          Positioned(bottom: 0, left: 0, right: 0, child: _buildContent()),
+          Positioned(
+            bottom: 40.h,
+            left: 32.w,
+            right: 32.w,
+            child: _buildContent(),
+          ),
         ],
       ),
     );
@@ -64,37 +73,32 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     return Container(
       width: 311.w,
       height: 400.h,
-      margin: EdgeInsets.symmetric(horizontal: 32.r, vertical: 40.r),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(48.r),
         color: ColorManager.primary.withAlpha((.9 * 255).round()),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.r),
-            child: CarouselSlider(
-              carouselController: _carouselController,
-              options: CarouselOptions(
-                height: 200.h,
-                viewportFraction: 1.0,
-                enableInfiniteScroll: false,
-                autoPlay: false,
-                enlargeCenterPage: false,
-                initialPage: _currentPage,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-              ),
-              items: _items,
+          CarouselSlider(
+            carouselController: _carouselController,
+            options: CarouselOptions(
+              height: 279.h,
+              viewportFraction: 1,
+              enableInfiniteScroll: false,
+              autoPlay: false,
+              initialPage: _currentPage,
+              enlargeCenterPage: true,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
             ),
+            items: _items,
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 15.h),
           DotsIndicator(
+            mainAxisSize: MainAxisSize.min,
             dotsCount: _items.length,
             position: _currentPage.toDouble(),
             onTap: (position) {
@@ -104,6 +108,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               });
             },
             decorator: DotsDecorator(
+              spacing: const EdgeInsets.only(left: 5),
               size: Size(24.w, 6.w),
               activeColor: ColorManager.white,
               activeSize: Size(24.w, 6.w),
@@ -116,10 +121,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               ),
             ),
           ),
-          SizedBox(height: 50.h),
+          _currentPage == 2 ? SizedBox(height: 20.h) : SizedBox(height: 30.h),
           _currentPage == 2
-              ? InkWell(
-                  borderRadius: BorderRadius.zero,
+              ? GestureDetector(
                   onTap: () async {
                     await SharedPrefsHelper.setOnBoardingScreenViewed();
                     context.pushReplacement(Routes.homeRoute);
@@ -140,38 +144,53 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     ),
                   ),
                 )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      child: Text(
-                        'Skip',
-                        style: StyleManager.titleStyle.copyWith(
-                          fontSize: 14.sp,
+              : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 32.r),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.center,
+                          fixedSize: Size(30.w, 20.h),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                      ),
-                      onPressed: () async {
-                        await SharedPrefsHelper.setOnBoardingScreenViewed();
-                        context.pushReplacement(Routes.homeRoute);
-                      },
-                    ),
-                    TextButton(
-                      child: Text(
-                        'Next',
-                        style: StyleManager.titleStyle.copyWith(
-                          fontSize: 14.sp,
+                        child: Text(
+                          'Skip',
+                          style: StyleManager.titleStyle.copyWith(
+                            fontSize: 14.sp,
+                          ),
                         ),
+                        onPressed: () async {
+                          await SharedPrefsHelper.setOnBoardingScreenViewed();
+                          context.pushReplacement(Routes.homeRoute);
+                        },
                       ),
-                      onPressed: () {
-                        if (_currentPage < _items.length - 1) {
-                          _carouselController.nextPage();
-                          setState(() {
-                            _currentPage++;
-                          });
-                        }
-                      },
-                    ),
-                  ],
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.center,
+                          fixedSize: Size(30.w, 20.h),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          'Next',
+                          style: StyleManager.titleStyle.copyWith(
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        onPressed: () {
+                          if (_currentPage < _items.length - 1) {
+                            _carouselController.nextPage();
+                            setState(() {
+                              _currentPage++;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
         ],
       ),
@@ -180,19 +199,27 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   Widget customItem({String? title, String? description}) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          title ?? 'error in title',
-          style: StyleManager.titleStyle,
-          textAlign: TextAlign.center,
+        Padding(
+          padding: EdgeInsets.only(top: 29.r, left: 30.r, right: 29.r),
+          child: SizedBox(
+            width: 254.w,
+            child: Text(
+              title ?? 'error in title',
+              style: StyleManager.titleStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
         SizedBox(height: 16.h),
-        Text(
-          description ?? 'error in description',
-          style: StyleManager.subTitleStyle,
-          textAlign: TextAlign.center,
+        Container(
+          width: 251.w,
+          margin: EdgeInsets.only(left: 38.r, right: 22.r),
+          child: Text(
+            description ?? 'error in description',
+            style: StyleManager.subTitleStyle,
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     );
